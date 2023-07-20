@@ -17,5 +17,12 @@ export interface Cliente {
 	otros: object;
 	inicio_de_actividad: string;
 	cuotas_pagadas: Pago[]
+	numero_server: number;
+	id_localidad: number
 	estado_vista?: number; // esto es lo que se usan en la app
+}
+
+export interface Localidad {
+	id: number;
+	nombre: string;
 }

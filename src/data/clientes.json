@@ -10,7 +10,8 @@
     "otros": {},
     "inicio_de_actividad": "16/7/2023",
     "cuotas_pagadas": [],
-    "estado_vista": -1
+    "estado_vista": -1,
+    "server": 1
   },
   {
     "id": "asdasdasqwqasdweqdasdass",
@@ -23,7 +24,8 @@
     "otros": {},
     "inicio_de_actividad": "12/6/2023",
     "cuotas_pagadas": [],
-    "estado_vista": -1
+    "estado_vista": -1,
+    "server": 1
   },
   {
     "id": "sdasdasdasqweqwedasa",
@@ -36,6 +38,7 @@
     "otros": {},
     "inicio_de_actividad": "16/6/2023",
     "cuotas_pagadas": [],
-    "estado_vista": -1
+    "estado_vista": -1,
+    "server": 1
   }
 ]

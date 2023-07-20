@@ -41,7 +41,10 @@ export default function AddUser() {
         const input_telefono = document.getElementById('telefono') as HTMLInputElement;
         const input_correo = document.getElementById('correo') as HTMLInputElement;
         const select_servicio = document.getElementById('servicio') as HTMLInputElement;
-        if (!select_servicio || !input_nombre_usuario || !input_clave || !input_telefono || !input_correo) return;
+        const select_servidor = document.getElementById('servidor') as HTMLInputElement;
+        const select_localidad = document.getElementById('localidad') as HTMLInputElement;
+
+        if (!select_servidor || !select_localidad || !select_servicio || !input_nombre_usuario || !input_clave || !input_telefono || !input_correo) return;
 
         const user: Cliente = {
             id: "",
@@ -49,11 +52,13 @@ export default function AddUser() {
             nombre_usuario: input_nombre_usuario.value,
             telefono: input_telefono.value,
             correo_electronico: input_correo.value,
-            servicio: select_servicio.value === "base" ? 2 : select_servicio.value === "prueba" ? 1 : 0,
+            servicio: Number(select_servicio.value),
             estado: 0,
             otros: {},
             inicio_de_actividad: fechaActual().fecha,
             cuotas_pagadas: [],
+            numero_server: Number(select_servidor),
+            id_localidad: Number(select_localidad)
         }
 
         if(validarUser(user)) return;
@@ -64,14 +69,12 @@ export default function AddUser() {
             <div className="flex items-center">
                 <Link to="/" className="px-4 py-2 w-[100px]">
                     <FlechaLeft 
-                        //@ts-ignore
                         style={{height: 30}} 
                     />
                 </Link>
                 <h1 className="text-[25px] text-center w-full py-5">Agregar usuarios</h1>
                 <div className="px-4 py-2 w-[100px] opacity-0">
                     <FlechaLeft 
-                        //@ts-ignore
                         style={{height: 30}} 
                     />
                 </div>
@@ -102,8 +105,24 @@ export default function AddUser() {
                     <label className="w-full md:w-[400px] text-[18px]" >Servicio</label>
                     <select id="servicio" className="w-full md:w-[400px] rounded-lg py-3 px-1 border border-black">
                         <option className="p-0" value=""></option>
-                        <option className="p-0" value="base">Base</option>
-                        <option className="p-0" value="prueba">Prueba</option>
+                        <option className="p-0" value={2}>Base</option>
+                        <option className="p-0" value={1}>Prueba</option>
+                    </select>
+                </div>
+                <div className="w-full p-3 md:px-10 flex flex-col justify-center items-center">
+                    <label className="w-full md:w-[400px] text-[18px]" >Servidor</label>
+                    <select id="servicio" className="w-full md:w-[400px] rounded-lg py-3 px-1 border border-black">
+                        <option className="p-0" value=""></option>
+                        <option className="p-0" value={1}>1</option>
+                    </select>
+                </div>
+                <div className="w-full p-3 md:px-10 flex flex-col justify-center items-center">
+                    <label className="w-full md:w-[400px] text-[18px]" >Localidad</label>
+                    <select id="servicio" className="w-full md:w-[400px] rounded-lg py-3 px-1 border border-black">
+                        <option className="p-0" value=""></option>
+                        <option className="p-0" value={1}>Malabrigo</option>
+                        <option className="p-0" value={2}>Reconquista</option>
+                        <option className="p-0" value={3}>Avellaneda</option>
                     </select>
                 </div>
                 <div className="w-full p-3 md:px-10 mt-3 flex flex-col justify-center items-center">
