@@ -1,30 +1,29 @@
-//export const fetchGet = async (path: string) => {  
-//  return await fetch(import.meta.env.VITE_URL_SERVER_DATA + path, {
-//    headers: {
-//      clave: import.meta.env.VITE_PASSWORD_SERVER_USER,
-//    },
-//  })
-//    .then((response) => response.json())
-//    .catch((error) => console.error(error));
-//};
+import { URL_SERVER_USER, CLAVE_SERVER_USER_GET} from "../validaciones/env";
 
-//export const fetchPost = async (path:string , body:any) => {
-//  const resultado = await fetch(
-//    import.meta.env.VITE_URL_SERVER_DATA + path,
-//    {
-//      method: "POST",
-//      headers: {
-//        "Content-Type": "application/json",
-//      },
-//      body
-//    }
-//  )
-//    .then((response) => response.json())
-//    .catch((error) => console.error(error));
+export const fetchGet = async (path: string) => {
+  return await fetch(URL_SERVER_USER + path, {
+    headers: {
+      clave: CLAVE_SERVER_USER_GET,
+    },
+  })
+    .then((response) => response.json())
+    .catch((error) => console.error(error));
+};
 
-//  if(resultado?.error){
-//    console.log(resultado?.error);
-//    return resultado;
-//  }
-//  return resultado;
-//};
+export const fetchPost = async (path: string, body: any) => {
+  const resultado = await fetch(URL_SERVER_USER + path, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body,
+  })
+    .then((response) => response.json())
+    .catch((error) => console.error(error));
+
+  if (resultado?.error) {
+    console.log(resultado?.error);
+    return resultado;
+  }
+  return resultado;
+};

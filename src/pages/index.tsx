@@ -3,17 +3,14 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Cliente } from "../types";
 import { estadoOfCliente } from "../funciones/estado";
-import DatosClientes from "../data/clientes.json";
 import Eyes from "../svg/eyes.svg";
 import Eyesnt from "../svg/eyesnt.svg";
-import Menu from "../svg/menu.svg";
-import Add from "../svg/add.svg";
-import Delete from "../svg/delete.svg";
+import { getAllUser } from "../api/users";
+import Menu from "../components/menu";
 
 export default function Main() {
     const navigate = useNavigate();
     const [text, setText] = useState<string>("");
-    const [menuVista, setMenuVista] = useState<boolean>(false);
     const [filtro, setFiltro] = useState<number>(-1);
     const [clientes, setClientes] = useState<Cliente[]>([]);
     const [clientesVista, setClientesVista] = useState<Cliente[]>([]);
@@ -22,9 +19,8 @@ export default function Main() {
         cargarClientes();
     }, [])
 
-    const cargarClientes = () => {
-        //@ts-ignore
-        const aux: Cliente[] = [...DatosClientes]
+    const cargarClientes = async () => {
+        const aux: Cliente[] = await getAllUser()
         const clienteNew: Cliente[] = aux.map(n => {
             n.estado_vista = estadoOfCliente(n)
             return n;
@@ -38,22 +34,17 @@ export default function Main() {
         setText(text);
         setFiltro(filt);
         setClientesVista(clientes.filter(n =>
-            n.nombre_usuario.toLowerCase().includes(texto.toLowerCase())
+            (n.cliente.nombre.toLowerCase().includes(texto.toLowerCase()) ||
+            n.cliente.nobre_del_local.toLowerCase().includes(texto.toLowerCase()))
             && (n.estado_vista === filt || filt === -1)));
     }
 
     return (
         <>
-            <MenuIndex vista={menuVista} setVista={setMenuVista} />
+            <Menu />
             <main className="w-screen flex flex-col items-center overflow-x-hidden">
                 <nav className="flex items-center justify-between w-full px-5 py-[20px]">
-                    <Menu className="opacity-0" style={{ height: 30 }} />
-                    <h1 className="text-[30px] text-center">Clientes of Amaro</h1>
-                    <button className="hover:cursor-pointer hover:opacity-70"
-                        style={{ height: 30 }}
-                        onClick={(e) => { e.preventDefault(); setMenuVista(n => !n) }}>
-                        <Menu style={{ height: 30 }} />
-                    </button>
+                    <h1 className="text-[30px] text-center w-full m-0 p-0">Clientes of Amaro</h1>
                 </nav>
                 <Formulario
                     Buscar={Buscar}
@@ -69,8 +60,11 @@ export default function Main() {
                                 } py-[10px] px-4 rounded-sm border border-black min-w-[90%] max-w-[90%] hover:cursor-pointer`}
                             onClick={e => { e.preventDefault(); navigate(`/user/${n.id}`) }}
                         >
-                            <p className="truncate">
-                                {n.nombre_usuario}
+                            <p className="truncate w-full text-lg">
+                                {n?.cliente.nombre}
+                            </p>
+                            <p className="truncate w-full text-lg">
+                                {n?.cliente.nobre_del_local}
                             </p>
                         </li>
                     )}
@@ -132,44 +126,5 @@ const Formulario = ({ Buscar, text, filtro }: PropsFromulario) => {
                 </>}
             </div>
         </form>
-    )
-}
-
-interface PropsMenu {
-    vista: boolean
-    setVista: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-const MenuIndex = ({ vista, setVista }: PropsMenu) => {
-    return (
-        <section className={`
-            ${vista ? "" : "translate-x-[-80vw] md:translate-x-[-30vw]"}
-            transition-all ease-linear duration-200
-            border-e border-black w-[80vw] md:w-[30vw] h-screen absolute z-100 bg-white top-0
-        `}>
-            <div className="py-5 w-full flex items-center justify-between">
-                <Add className="opacity-0 ps-5 h-[25px]" />
-                <h3 className="text-[25px] text-center h-[25px] flex justify-center items-center">Funciones</h3>
-                <button className="pe-5 h-[25px] flex justify-center items-center hover:cursor-pointer"
-                    onClick={e => { e.preventDefault(); setVista(n => !n) }}
-                >
-                    <Delete style={{ height: "25px" }} />
-                </button>
-            </div>
-            <article className="py-5 w-full flex flex-col gap-7 items-center justify-center">
-                <div className="flex flex-col items-center w-[80%]">
-                    <button className="p-5 w-[100%] border text-center border-black rounded-xl">Agrear servicio</button>
-                </div>
-                <div className="flex flex-col items-center w-[80%]">
-                    <button className="p-5 w-[100%] border text-center border-black rounded-xl">Agrear servidor</button>
-                </div>
-                <div className="flex flex-col items-center w-[80%]">
-                    <button className="p-5 w-[100%] border text-center border-black rounded-xl">Agregar localidad</button>
-                </div>
-                <div className="flex flex-col items-center w-[80%]">
-                    <Link to="/user/Add" className="p-5 w-[100%] border text-center border-black rounded-xl">Agrear cliente</Link>
-                </div>
-            </article>
-        </section>
     )
 }
