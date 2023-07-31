@@ -1,4 +1,4 @@
-import { getUserById } from './../api/users';
+import { deleteUserById, getUserById } from './../api/users';
 import { createUser, getAllUser } from "../api/users";
 import { Cliente } from "../types";
 import { ValidarUser } from "../validaciones";
@@ -67,4 +67,9 @@ export const GetAllUser = async () => {
 
 export const GetUserById = async (id:string) => {
     return await getUserById(id)
+}
+
+export const DeleteById = async (id:string) => {
+    if(id === "") return false;
+    return await deleteUserById(id)
 }

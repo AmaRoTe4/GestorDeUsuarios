@@ -5,8 +5,10 @@ import { Cliente } from "../types";
 import { estadoOfCliente } from "../funciones/estado";
 import Eyes from "../svg/eyes.svg";
 import Eyesnt from "../svg/eyesnt.svg";
+import Delete from "../svg/delete.svg";
 import { getAllUser } from "../api/users";
 import Menu from "../components/menu";
+import { DeleteById } from "../funciones/users";
 
 export default function Main() {
     const navigate = useNavigate();
@@ -14,10 +16,11 @@ export default function Main() {
     const [filtro, setFiltro] = useState<number>(-1);
     const [clientes, setClientes] = useState<Cliente[]>([]);
     const [clientesVista, setClientesVista] = useState<Cliente[]>([]);
+    const [recarga, setRecarga] = useState<number>(0);
 
     useEffect(() => {
         cargarClientes();
-    }, [])
+    }, [recarga])
 
     const cargarClientes = async () => {
         const aux: Cliente[] = await getAllUser()
@@ -39,6 +42,13 @@ export default function Main() {
             && (n.estado_vista === filt || filt === -1)));
     }
 
+    const deleteUser = async (id:string) => {
+        if(id === "") return alert("id no valido"); 
+        const resultado = await DeleteById(id); 
+        setRecarga(n => n + 1)
+        alert(resultado)
+    }
+
     return (
         <>
             <Menu />
@@ -57,15 +67,21 @@ export default function Main() {
                             className={`${n.estado_vista === 0 ? "bg-red-600"
                                 : n.estado_vista === 1 ? "bg-yellow-600"
                                     : "bg-green-600"
-                                } py-[10px] px-4 rounded-sm border border-black min-w-[90%] max-w-[90%] hover:cursor-pointer`}
-                            onClick={e => { e.preventDefault(); navigate(`/user/${n.id}`) }}
+                                } px-4 rounded-sm border border-black min-w-[90%] max-w-[90%] flex justify-between`}
                         >
-                            <p className="truncate w-full text-lg">
-                                {n?.cliente.nombre}
-                            </p>
-                            <p className="truncate w-full text-lg">
-                                {n?.cliente.nobre_del_local}
-                            </p>
+                            <div className="w-full h-auto py-[10px] hover:cursor-pointer" onClick={e => { e.preventDefault(); navigate(`/user/${n.id}`) }}>
+                                <p className="truncate w-full text-lg">
+                                    {n?.cliente.nombre}
+                                </p>
+                                <p className="truncate w-full text-lg">
+                                    {n?.cliente.nobre_del_local}
+                                </p>
+                            </div>
+                            <div className="h-auto flex justify-center items-center">
+                                <button className="p-4 rounded-lg bg-black" type="button" onClick={() => deleteUser((n.id)?.toString() ?? "")}>
+                                    <Delete style={{fill: "white"}} />
+                                </button>
+                            </div>
                         </li>
                     )}
                 </ul>

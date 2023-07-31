@@ -14,3 +14,7 @@ export const createUser = async (body:Cliente) => {
     const bodyUser = JSON.stringify({clave: CLAVE_SERVER_USER_POST, user: {...body}})
     return await fetchPost("c/" , bodyUser)
 }
+
+export const deleteUserById = async (id:string) => {
+    return await fetchPost("d/" + id , JSON.stringify({clave: CLAVE_SERVER_USER_POST}))
+}
