@@ -3,7 +3,7 @@ export const fechaActual = () => {
 
   const dia: number = fechaActual.getDate();
   const mes: number = fechaActual.getMonth() + 1;
-  const año: number = fechaActual.getFullYear();
+  const anio: number = fechaActual.getFullYear();
   const horas: number = fechaActual.getHours();
   const minutos: number = fechaActual.getMinutes();
 
@@ -13,7 +13,7 @@ export const fechaActual = () => {
       "/" +
       mes.toString().padStart(2, "0") +
       "/" +
-      año,
+      anio,
     hora:
       horas.toString().padStart(2, "0") +
       ":" +

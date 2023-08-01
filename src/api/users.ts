@@ -15,6 +15,13 @@ export const createUser = async (body:Cliente) => {
     return await fetchPost("c/" , bodyUser)
 }
 
+export const updateUserById = async (cliente: Cliente) => {
+    return await fetchPost("/u/" + cliente.id , JSON.stringify({
+        clave: CLAVE_SERVER_USER_POST,
+        user: cliente
+    }))
+}
+
 export const deleteUserById = async (id:string) => {
     return await fetchPost("d/" + id , JSON.stringify({clave: CLAVE_SERVER_USER_POST}))
 }

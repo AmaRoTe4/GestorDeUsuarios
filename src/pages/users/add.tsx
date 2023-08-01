@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Link } from "react-router-dom";
-import FlechaLeft from "../../svg/flechaLeft.svg";
 import InputGeneral from "../../components/inputs";
 import { CrearUser } from "../../funciones/users";
 import Menu from "../../components/menu";

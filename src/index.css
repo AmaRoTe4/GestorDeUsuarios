@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-.noScrollBar::-webkit-scrollbar{
-    display: none;
+.noScrollBar::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  scrollbar-width: thin; 
+  scrollbar-color: #000000 #ffffff; 
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ffffff; 
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000000; 
+  border-radius: 5px;
 }

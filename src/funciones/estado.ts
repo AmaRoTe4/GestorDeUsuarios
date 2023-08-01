@@ -4,7 +4,10 @@ import { fechaActual, separarStringPorSlash } from "./fechaActual";
 // 0 -> debe y paso el plazo
 // 1 -> debe pero esta en los tres dias
 // 2 -> pagado
+// 10 -> prueba
 export const estadoOfCliente = (cliente:Cliente):number => {
+    //el id_servicio === 1 es prueba
+    if(cliente.servicios[0].id_servicio === 1) return 10
     const [dia , mes , anio] = separarStringPorSlash(fechaActual().fecha);
     const [diaInicio , mesInicio , anioInicio] = separarStringPorSlash(cliente.servicios[0].inicio_de_actividad)
     

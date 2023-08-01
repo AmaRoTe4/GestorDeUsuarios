@@ -64,9 +64,10 @@ export default function Main() {
                 <ul className="noScrollBar flex flex-col items-center w-full py-[20px] overflow-y-scroll overflow-x-hidden max-h-[60vh] gap-4 pb-[100px]">
                     {clientesVista && clientesVista.map((n) =>
                         <li key={n.id}
-                            className={`${n.estado_vista === 0 ? "bg-red-600"
+                            className={`${n.estado_vista === 2 ? "bg-green-600"
                                 : n.estado_vista === 1 ? "bg-yellow-600"
-                                    : "bg-green-600"
+                                : n.estado_vista === 10 ? "bg-blue-600"
+                                    : "bg-red-600"
                                 } px-4 rounded-sm border border-black min-w-[90%] max-w-[90%] flex justify-between`}
                         >
                             <div className="w-full h-auto py-[10px] hover:cursor-pointer" onClick={e => { e.preventDefault(); navigate(`/user/${n.id}`) }}>

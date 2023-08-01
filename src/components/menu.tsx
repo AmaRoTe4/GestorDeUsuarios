@@ -28,7 +28,7 @@ export default function Menu() {
                         <Delete style={{ height: "25px" }} />
                     </button>
                 </div>
-                <article className="py-5 w-full flex flex-col gap-7 items-center justify-center">
+                <article className="py-5 w-full flex flex-col gap-7 items-center justify-center max-h-[87.5vh] overflow-y-scroll">
                     <div className="flex flex-col items-center w-[80%]">
                         <Link to="/" className="p-5 w-[100%] border text-center border-black rounded-xl">Inicio</Link>
                     </div>
@@ -43,6 +43,9 @@ export default function Menu() {
                     </div>
                     <div className="flex flex-col items-center w-[80%]">
                         <Link to="/user/Add" className="p-5 w-[100%] border text-center border-black rounded-xl">Agrear cliente</Link>
+                    </div>
+                    <div className="flex flex-col items-center w-[80%]">
+                        <Link to="/doc" className="p-5 w-[100%] border text-center border-black rounded-xl">Documentación</Link>
                     </div>
                 </article>
             </section>
