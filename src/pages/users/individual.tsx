@@ -6,6 +6,7 @@ import Menu from "../../components/menu";
 import { estadoOfCliente } from "../../funciones/estado";
 import { ValuesApp } from "../../types.d"
 import { fechaActual } from "../../funciones/fechaActual";
+import { cartelError, cartelSuccess, cartelValidacion } from "../../components/carteles";
 
 export default function UserForId() {
     const navigate = useNavigate()
@@ -81,10 +82,28 @@ export default function UserForId() {
         return
     }
 
+    const removeCuota = () => {
+        if(!user) return;
+        if(user?.servicios[0].coutas_pagadas.length === 0) return;
+        let newCuotas = [...user?.servicios[0].coutas_pagadas]
+        newCuotas.pop();
+
+        setUser({
+            ...user,
+            servicios: [
+                {
+                    ...user.servicios[0],
+                    coutas_pagadas: [...newCuotas]
+                }
+            ]
+        })
+    }
+
     const AgregarEnBaseDeDatos = async () => {
-        if(!user) return alert("User no existe!!!")
-        alert("Modificacion realizada con exito!!!")
-        await UpdateUserById(user)
+        if(!user) return cartelError("User no existe!")
+        const resultado = await UpdateUserById(user)
+        if(resultado) cartelSuccess("Modificacion realizada con exito!!!")
+        else cartelError("Error al modificar en la base de datos!")
     }
 
     return (
@@ -99,7 +118,8 @@ export default function UserForId() {
                     <DatosService
                         setUser={setUser}
                         user={user}
-                        funcion={agregarCuota}
+                        addCuota={agregarCuota}
+                        removeCuota={removeCuota}
                     />
                 </main>}
             <div className="flex flex-col max-w-[200px] ms-5">
@@ -118,7 +138,8 @@ export default function UserForId() {
 interface propsDatosPersonal {
     user: Cliente | null
     setUser: React.Dispatch<React.SetStateAction<Cliente | null>>
-    funcion?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+    addCuota?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+    removeCuota?: () => void
 }
 
 const DatosUser = ({ user, setUser }: propsDatosPersonal) => {
@@ -288,11 +309,12 @@ const DatosUser = ({ user, setUser }: propsDatosPersonal) => {
     )
 }
 
-const DatosService = ({ user, setUser, funcion }: propsDatosPersonal) => {
+const DatosService = ({ user, setUser, addCuota , removeCuota }: propsDatosPersonal) => {
     const [formulario, setFormulario] = useState({
         valor_de_cuotas: user?.servicios[0].valor_de_cuotas,
         id_servicio: user?.servicios[0].id_servicio,
         id_server: user?.servicios[0].id_server,
+        inicio_de_actividad: user?.servicios[0].inicio_de_actividad,
     })
 
     const guardarCambios = (e: React.FormEvent<HTMLFormElement>) => {
@@ -304,12 +326,14 @@ const DatosService = ({ user, setUser, funcion }: propsDatosPersonal) => {
         const valor_de_cuotas = Number(formData.get("valor_de_cuotas")) as number
         const id_servicio = Number(formData.get("id_servicio")) as number
         const id_server = Number(formData.get("id_server")) as number
+        const inicio_de_actividad = formData.get("inicio_de_actividad") as string
 
         setUser({
             ...user,
             servicios: [
                 {
                     ...user.servicios[0],
+                    inicio_de_actividad,
                     valor_de_cuotas,
                     id_server,
                     id_servicio
@@ -323,7 +347,7 @@ const DatosService = ({ user, setUser, funcion }: propsDatosPersonal) => {
         setFormulario({ ...formulario, [name]: value });
     };
 
-    if (!user || !funcion) return <></>
+    if (!user || !addCuota || !removeCuota) return <></>
     return (
         <div className="w-full md:w-[50%] p-3 flex flex-col gap-2 bg-gray-500 rounded-md">
             <h2 className="text-white text-3xl">Informacion de los servicios: </h2>
@@ -332,9 +356,16 @@ const DatosService = ({ user, setUser, funcion }: propsDatosPersonal) => {
                     <p className="text-xl text-white flex gap-1 p-[2px] items-center">
                         <span className="font-bold text-black min-w-[200px]">id: </span> {i + 1}
                     </p>
-                    <p className="text-xl text-white flex gap-1 p-[2px] items-center">
-                        <span className="font-bold text-black min-w-[200px]">inicio de actividad: </span> {n.inicio_de_actividad}
-                    </p>
+                    <div className="text-xl text-white flex gap-1 p-[2px] items-center">
+                        <label className="font-bold text-black min-w-[200px]">inicio de actividad: </label>
+                        <input
+                            type="string"
+                            className="text-white bg-inherit border-inherit focus:border focus:border-black" name="inicio_de_actividad"
+                            id="inicio_de_actividad"
+                            value={formulario.inicio_de_actividad}
+                            onChange={handleChange}
+                        />
+                    </div>
                     <div className="text-xl text-white flex gap-1 p-[2px] items-center">
                         <label className="font-bold text-black min-w-[200px]">valor de cuota: </label>
                         <input
@@ -381,15 +412,20 @@ const DatosService = ({ user, setUser, funcion }: propsDatosPersonal) => {
                             <p>cantidad pagada: {n.coutas_pagadas.length}</p>
                             <select name="coutas_pagadas" className="text-white bg-inherit border-inherit focus:border focus:border-black flex flex-col gap-2 p-1 min-w-[200px]">
                                 {n.coutas_pagadas.map((m, y) => (
-                                    <option key={y} selected={y === 0}>{m.fecha_de_pago}</option>
+                                    <option className="text-black" key={y} selected={y === 0}>{m.fecha_de_pago}</option>
                                 ))}
                             </select>
                         </div>
                     </div>
                     <div className="w-full py-1 gap-10 flex justify-end items-center">
-                        <button type="button" onClick={e => funcion(e)} className="bg-lime-500 p-4 rounded-lg min-w-[200px]">
+                        <button type="button" onClick={e => addCuota(e)} className="bg-lime-500 p-4 rounded-lg min-w-[200px]">
                             Agregar Cuota
                         </button>
+                        <button type="button" onClick={() => removeCuota()} className="bg-lime-500 p-4 rounded-lg min-w-[200px]">
+                            Remove Cuota
+                        </button>
+                    </div>
+                    <div className="w-full py-1 gap-10 flex justify-end items-center">
                         <button type="submit" className="bg-lime-500 p-4 rounded-lg min-w-[200px]">
                             Guardar Cambios
                         </button>

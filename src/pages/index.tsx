@@ -9,6 +9,7 @@ import Delete from "../svg/delete.svg";
 import { getAllUser } from "../api/users";
 import Menu from "../components/menu";
 import { DeleteById } from "../funciones/users";
+import { cartelError, cartelSuccess, cartelValidacion } from "../components/carteles";
 
 export default function Main() {
     const navigate = useNavigate();
@@ -33,20 +34,28 @@ export default function Main() {
         setClientesVista(clienteNew);
     };
 
+    //este filtro esta hecho con el tema de estado_vista y para prueba directamnete usando
+    //el valor de servicio donde el valor 1 es de prueba
     const Buscar = (texto: string = text, filt: number = filtro) => {
         setText(text);
         setFiltro(filt);
         setClientesVista(clientes.filter(n =>
             (n.cliente.nombre.toLowerCase().includes(texto.toLowerCase()) ||
-            n.cliente.nobre_del_local.toLowerCase().includes(texto.toLowerCase()))
-            && (n.estado_vista === filt || filt === -1)));
+                n.cliente.nobre_del_local.toLowerCase().includes(texto.toLowerCase()))
+            &&
+            ((n.estado_vista === filt ||
+                (filt === 3 && n.servicios[0].id_servicio === 1)) ||
+                filt === -1))
+        );
     }
 
-    const deleteUser = async (id:string) => {
-        if(id === "") return alert("id no valido"); 
-        const resultado = await DeleteById(id); 
-        setRecarga(n => n + 1)
-        alert(resultado)
+    const deleteUser = async (id: string) => {
+        cartelValidacion("Alerta!", "¿Estas seguro de querer borrar el usuario?", async () => {
+            if (id === "") return cartelError("Error!" , "id no valido.");
+            await DeleteById(id);
+            setRecarga(n => n + 1);
+            cartelSuccess("Eliminado con exito!");
+        })
     }
 
     return (
@@ -66,8 +75,8 @@ export default function Main() {
                         <li key={n.id}
                             className={`${n.estado_vista === 2 ? "bg-green-600"
                                 : n.estado_vista === 1 ? "bg-yellow-600"
-                                : n.estado_vista === 10 ? "bg-blue-600"
-                                    : "bg-red-600"
+                                    : n.estado_vista === 10 ? "bg-blue-600"
+                                        : "bg-red-600"
                                 } px-4 rounded-sm border border-black min-w-[90%] max-w-[90%] flex justify-between`}
                         >
                             <div className="w-full h-auto py-[10px] hover:cursor-pointer" onClick={e => { e.preventDefault(); navigate(`/user/${n.id}`) }}>
@@ -80,7 +89,7 @@ export default function Main() {
                             </div>
                             <div className="h-auto flex justify-center items-center">
                                 <button className="p-4 rounded-lg bg-black" type="button" onClick={() => deleteUser((n.id)?.toString() ?? "")}>
-                                    <Delete style={{fill: "white"}} />
+                                    <Delete style={{ fill: "white" }} />
                                 </button>
                             </div>
                         </li>
@@ -139,6 +148,12 @@ const Formulario = ({ Buscar, text, filtro }: PropsFromulario) => {
                             Deben
                         </label>
                         <input onChange={() => Buscar(text, 0)} className="hidden" id="Deben" type="radio" name="filtro" />
+                    </div>
+                    <div className={`min-w-[150px] flex justify-center items-center rounded-xl ${filtro === 3 ? "bg-green-500" : "bg-slate-300"}`}>
+                        <label className="w-full py-3 text-center hover:cursor-pointer hover:opacity-80" htmlFor="Prueba">
+                            Prueba
+                        </label>
+                        <input onChange={() => Buscar(text, 3)} className="hidden" id="Prueba" type="radio" name="filtro" />
                     </div>
                 </>}
             </div>
