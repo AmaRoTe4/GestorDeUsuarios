@@ -3,7 +3,8 @@
 export const ValuesApp = {
   servicio: [
     { id: 1, name: "prueba" },
-    { id: 2, name: "base" },
+    { id: 2, name: "comercio" },
+    { id: 3, name: "turnos" },
   ],
   servidor: [{ id: 1, name: "1" }],
   localidad: [
